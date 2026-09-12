@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use app\models\task;
+use App\Models\task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        $query = task::query();
+        
+        $query = Task::query();
 
-        //filter status
+        // Filter status
         if ($request->has('status') && $request->status != '') {
             $query->where('is_completed', $request->status === 'completed');
         }
 
         $tasks = $query->orderBy('due_date', 'asc')->get();
 
-        //stats ringkas
-        $totalTask = task::count();
-        $completedTask = task::where('is_completed', true)->count();
-        $pendingTask = task::where('is_completed', false)->count();
+        // Tambahkan 3 baris variabel statistik ini sebelum baris return view
+        $totalTasks = Task::count();
+        $completedTasks = Task::where('is_completed', true)->count();
+        $pendingTasks = Task::where('is_completed', false)->count();
 
-        return view('tasks', compact('tasks', 'totalTasks', 'completedTask', 'pendingTasks'));
-
+        return view('tasks', compact('tasks', 'totalTasks', 'completedTasks', 'pendingTasks'));
     }
 
     public function store(Request $request)
